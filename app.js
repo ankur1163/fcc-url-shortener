@@ -14,19 +14,27 @@ app.get("/",function(req,res){
   res.render("\views\index.html")
 })
 
-app.get("/process",function(req,res){
-Mongoclient.connect(mongo_url,function(err,db){
-  if(err){
-    console.log("there is error connecting mongodb");
-  }
-  else{
-    console.log("All went well with mongodb");
-  }
-})
+app.post("/process", function (request, response) {
+  Mongoclient.connect(mongo_url,function(err,db){
+    if(err){
+      console.log("there is error connecting mongodb");
+    }
+    else{
+      console.log("All went well with mongodb");
+      var rno = Math.floor(Math.random()*89999+10000);
+      var data = {
+          url: request.query.url,
+          urltogo: "https://fcc-url-shortener-63.herokuapp.com/"+rno
+      }
+      var insertedId = db.collection('url').insert(data);
+      response.send("<p>done<p>");
+    }
 
-
+  })
 
 });
+
+
 
 /*
 
