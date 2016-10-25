@@ -43,7 +43,7 @@ app.post("/process", function (request, response) {
       console.log("All went well with mongodb");
       var rno = Math.floor(Math.random()*89999+10000);
       var regex = /(https?:\/\/(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,})/gi;
-      var short_url = 'http://localhost:5000/' + rno;
+      var short_url = 'https://fcc-url-shortener-63.herokuapp.com/' + rno;
       if(regex.test(request.query.url)) {
           var data = {
             url: request.query.url,

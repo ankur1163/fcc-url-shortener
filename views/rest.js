@@ -3,7 +3,7 @@ $(document).ready(function(){
     e.preventDefault();
     var url = $('#url').val();
     $('#short-url').text('Loading.......');
-    $.post('http://localhost:5000/process?' + $.param({url: url}))
+    $.post('https://fcc-url-shortener-63.herokuapp.com/process?' + $.param({url: url}))
     .done(function(data){
       $('input').val('');
       $('input').focus();
