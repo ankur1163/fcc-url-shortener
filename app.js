@@ -52,11 +52,8 @@ app.post("/process", function (request, response) {
           short_url: short_url
         });
       } else {
-        response.send(422).send({
-          error: 'Please provide valid url like http://example.com'
-        });
+        response.sendStatus(500);
       }
-      
     }
 
   })

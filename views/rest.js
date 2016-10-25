@@ -8,11 +8,11 @@ $(document).ready(function(){
       $('input').val('');
       $('input').focus();
       console.log(data);
-      $('#short-url').html('<strong>Short Url: </strong>'+data.short_url);
+      $('#short-url').html('<strong>Short Url: </strong><a target="_blank" href='+data.short_url+'>'+data.short_url+'</a>');
     })
     .fail(function(xhr, status, err){
       console.log(err);
-      $('#short-url').html('<strong>Error: </strong>'+err.error);
+      $('#short-url').html('<strong>Error: </strong>Please provide valid url like http://example.com');
     });
   });
 });
