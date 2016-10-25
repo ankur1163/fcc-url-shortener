@@ -43,18 +43,35 @@ app.post("/process", function (request, response) {
       console.log("All went well with mongodb");
       var rno = Math.floor(Math.random()*89999+10000);
       var regex = /(https?:\/\/(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,})/gi;
-      var short_url = 'http://localhost:5000/' + rno;
+      /*
+        * To dynamically generate url
+        * we need to use `request` object we have above
+        * you can console.log(request); to see what request object contains
+        * request.protocol gives only protocal i.e http or https
+        * req.get('Host') give host name like www.example.com
+        * so to form url we use request.protocol + '://' + request.get('Host') + '/'
+       */
+      var short_url = request.protocol + '://' + request.get('Host') + '/' + rno;
+      console.log(short_url);
+      // test for valid url
       if(regex.test(request.query.url)) {
-          var data = {
-            url: request.query.url,
-            url_id: rno
-        }
-        var insertedId = db.collection('url').insert(data);
-        response.status(200).send({
-          short_url: short_url
-        });
+          // test for protocol in url i.e http or https
+          if(request.query.url.indexOf('http') !== -1){
+            var data = {
+              url: request.query.url,
+              url_id: rno
+            }
+            var insertedId = db.collection('url').insert(data);
+              response.status(200).send({
+                short_url: short_url
+              });
+          } else {
+            // send error
+            response.status(500).send({message: 'Please provide valid url with protocol like http://www.example.com'});    
+          }
       } else {
-        response.sendStatus(500);
+        // send error
+        response.status(500).send({message: 'Please provide valid url like http://www.example.com'});
       }
     }
 
