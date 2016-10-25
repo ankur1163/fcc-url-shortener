@@ -14,6 +14,24 @@ app.get("/",function(req,res){
   res.render("\views\index.html")
 })
 
+app.get('/:url_id', function(req, res){
+  var url_id= req.params.url_id;
+  console.log(req.params);
+  MongoClient.connect(mongo_url,function(err,db){
+    if(err){
+      console.log("there is error connecting mongodb");
+    }
+    else{
+      db.collection('url').findOne({url_id: ~~url_id}, function(err,doc){
+        if(err) throw err;
+        console.log(err);
+        console.log(doc);
+        res.redirect(doc.url);
+      });
+    }
+  });
+});
+
 app.post("/process", function (request, response) {
   MongoClient.connect(mongo_url,function(err,db){
     if(err){
@@ -22,20 +40,30 @@ app.post("/process", function (request, response) {
     else{
       console.log("All went well with mongodb");
       var rno = Math.floor(Math.random()*89999+10000);
-      var short_url = "https://fcc-url-shortener-63.herokuapp.com/"+rno;
-      var data = {
-          url: request.query.url,
-          urltogo: short_url
+      var regex = /(https?:\/\/(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,})/gi;
+      var short_url = 'http://localhost:5000/' + rno;
+      if(regex.test(request.query.url)) {
+          var data = {
+            url: request.query.url,
+            url_id: rno
+        }
+        var insertedId = db.collection('url').insert(data);
+        response.status(200).send({
+          short_url: short_url
+        });
+      } else {
+        response.send(422).send({
+          error: 'Please provide valid url like http://example.com'
+        });
       }
-      var insertedId = db.collection('url').insert(data);
-      response.status(200).send({
-        short_url: short_url
-      });
+      
     }
 
   })
 
 });
+
+
 
 
 
