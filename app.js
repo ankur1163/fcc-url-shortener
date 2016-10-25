@@ -15,19 +15,22 @@ app.get("/",function(req,res){
 })
 
 app.post("/process", function (request, response) {
-  Mongoclient.connect(mongo_url,function(err,db){
+  MongoClient.connect(mongo_url,function(err,db){
     if(err){
       console.log("there is error connecting mongodb");
     }
     else{
       console.log("All went well with mongodb");
       var rno = Math.floor(Math.random()*89999+10000);
+      var short_url = "https://fcc-url-shortener-63.herokuapp.com/"+rno;
       var data = {
           url: request.query.url,
-          urltogo: "https://fcc-url-shortener-63.herokuapp.com/"+rno
+          urltogo: short_url
       }
       var insertedId = db.collection('url').insert(data);
-      response.send("<p>done<p>");
+      response.status(200).send({
+        short_url: short_url
+      });
     }
 
   })
